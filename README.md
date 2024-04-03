@@ -1,40 +1,168 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Apply the synpress to the service for testing a connection between web3 wallet and service.
 
-## Getting Started
+### First of all
 
-First, run the development server:
+#### 1. Installation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+** Project should be over node 18.x **
+
+CMD : `yarn add -D @synthetixio/synpress`
+
+### Setup
+
+(READ THE DOCS)[https://github.com/synpress-io/docs/blob/main/e2e-testing/using-with-cypress.md]
+
+#### 1. Install Cypress & Run it
+
+Add cypress lib : `yarn add -D cypress`
+
+After install the cypress lib, run cmd `yarn cypress open`
+
+It will check the first running and create the dir for the test
+
+```
+project_dir
+└── src (Project Codes)
+└── cypress
+    └── e2e // Where all of your E2E tests will live.
+        └── spec.cy.ts
+    └── fixtures
+        └── example.json
+    └── support
+        └── commands.ts
+        └── e2e.ts Where you will import Synpress plugins.
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### 2. Add synpress lib
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Add `import "@synthetixio/synpress/support/index";` to the /cypress/support/e2e.ts
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+> is it possible to import library? Absolute path is not applied.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+#### 3. Fix cypress.config.ts
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+> No Idea How to handle it
 
-## Learn More
+```
+//... cypress.config.ts
 
-To learn more about Next.js, take a look at the following resources:
+import { defineConfig } from "cypress";
+// const setupNodeEvents = require("@synthetixio/synpress/plugins/index");
+// Set timeout (in milliseconds) for Cypress & Synpress to wait before failing.
+// Note: big timeout can slow the tests down. Slow timeouts can cause the test to fail.
+// Read more about timeouts: https://docs.cypress.io/guides/references/configuration#Timeouts
+const timeout = process.env.SYNDEBUG ? 9999999 : 30000;
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+const e2e = {
+    // For the Synpress config ----------
+    testIsolation: false,
+    // Url for the test dApp
+    baseUrl: "http://127.0.0.1:8080/",
+    // Where all tests can be found.
+    specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
+    // Path for your support file your setup early
+    supportFile: "cypress/support/e2e.ts",
+    // For the Synpress config ----------
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+const config = {
+    // For the Synpress config ----------
+  userAgent: "synpress",
+  retries: {
+    runMode: process.env.CI ? 1 : 0,
+    openMode: 0,
+  },
+  fixturesFolder: "@synthetixio/synpress/fixtures",
+  chromeWebSecurity: true,
+  viewportWidth: 1920,
+  viewportHeight: 1080,
+  video: false,
+  env: {
+    coverage: false,
+  },
+  defaultCommandTimeout: timeout,
+  pageLoadTimeout: timeout,
+  requestTimeout: timeout,
+  // For the Synpress config ----------
+}
 
-## Deploy on Vercel
+export default defineConfig({
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  ...config,
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+  e2e: {
+
+    ...e2e,
+    setupNodeEvents(on, config) {
+      // implement node event listeners here
+      // Let's figure out how to use node set up event for Synpress ----
+    },
+  },
+});
+
+
+
+```
+
+#### 4.
+
+---
+
+(READ THE DOCS)[https://github.com/synpress-io/docs/blob/main/getting-starting/writing-your-first-e2e-test.md];
+
+#### 1. Directory structure
+
+```
+project_dir
+└── src (Project Codes)
+└── tests
+    └── e2e
+        └── .eslintrc.js
+        └── support.js
+        └── tsconfig.json
+        └── specs
+            └── example-spec.js
+        └── pages
+            └── example-page.js
+```
+
+#### 2. In your test folder create .eslintrc.js
+
+```
+const path = require('path');
+const synpressPath = path.join(
+  process.cwd(),
+  '/node_modules/@synthetixio/synpress',
+);
+
+module.exports = {
+  extends: `${synpressPath}/.eslintrc.js`,
+};
+```
+
+#### 3. In the same folder create support.js
+
+Add `import '@synthetixio/synpress/support/index';` to the /tests/e2e/support.js
+
+#### 4. Create tsconfig.json
+
+```
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": "../../node_modules",
+    "types": [
+      "cypress",
+      "@synthetixio/synpress/support",
+      "cypress-wait-until",
+      "@testing-library/cypress"
+    ],
+    "outDir": "./output"
+  },
+  "include": ["**/*.*"]
+}
+```
+
+#### 5. Add cypress to the root dir
+
+ADD : `yarn add -D cypress`
