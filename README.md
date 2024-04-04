@@ -130,6 +130,9 @@ IS_TESTNET=true
 
 > (ISSUE)[https://github.com/cypress-io/cypress/issues/26308]
 
+Error msg : `TSError: ⨯ Unable to compile TypeScript:
+error TS5095: Option 'bundler' can only be used when 'module' is set to 'es2015' or later.`
+
 Cypress 12.x has an error related to bundling source code.
 
 The simple way to fix the issue is to change the "moduleResolution": "bundler" to "moduleResolution": "node" in tsconfig.json;
