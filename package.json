@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "synpress:run": "env-cmd -f .env synpress run --configFile synpress.config.ts",
+    "synpress:run": "env-cmd -f .env synpress run --configFile _synpress.config.ts",
     "test:e2e": "start-server-and-test 'yarn dev' http://localhost:8080 'yarn synpress:run'"
   },
   "dependencies": {
