@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "synpress:run": "env-cmd -f .env synpress run --configFile synpress.config.ts",
+    "test:e2e": "start-server-and-test 'yarn dev' http://localhost:8080 'yarn synpress:run'"
   },
   "dependencies": {
     "next": "14.1.4",

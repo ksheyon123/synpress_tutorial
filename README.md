@@ -39,15 +39,15 @@ Add `import "@synthetixio/synpress/support/index";` to the /cypress/support/e2e.
 
 > is it possible to import library? Absolute path is not applied.
 
-#### 3. Fix cypress.config.ts
+#### 3. Add synpress.config.ts (Not cypress.config.ts)
 
 > No Idea How to handle it
 
 ```
-//... cypress.config.ts
+//... synpress.config.ts
 
 import { defineConfig } from "cypress";
-// const setupNodeEvents = require("@synthetixio/synpress/plugins/index");
+const setupNodeEvents = require("@synthetixio/synpress/plugins/index");
 // Set timeout (in milliseconds) for Cypress & Synpress to wait before failing.
 // Note: big timeout can slow the tests down. Slow timeouts can cause the test to fail.
 // Read more about timeouts: https://docs.cypress.io/guides/references/configuration#Timeouts
@@ -62,6 +62,7 @@ const e2e = {
     specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
     // Path for your support file your setup early
     supportFile: "cypress/support/e2e.ts",
+    setupNodeEvents,
     // For the Synpress config ----------
 }
 
@@ -93,10 +94,10 @@ export default defineConfig({
   e2e: {
 
     ...e2e,
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-      // Let's figure out how to use node set up event for Synpress ----
-    },
+    //setupNodeEvents(on, config) {
+    // implement node event listeners here
+    // Let's figure out how to use node set up event for Synpress ----
+    //},
   },
 });
 
@@ -104,7 +105,26 @@ export default defineConfig({
 
 ```
 
-#### 4.
+#### 4. Add .env
+
+```
+# .env.e2e
+# The recovery phrase for the wallet that will be restored while preparing Metamask
+# Will be the selected wallet by default when connecting to the dApp
+SECRET_WORDS='battle raccoon helmet please deliver keep kiss round orphan frame update message'
+# Network info at which the tests will run.
+NETWORK_NAME='Mumbai'
+CHAIN_ID=80001
+RPC_URL='https://matic-mumbai.chainstacklabs.com'
+SYMBOL="MATIC"
+IS_TESTNET=true
+
+```
+
+#### 5. Add Synpress scripts to package.json
+
+`"synpress:run": "env-cmd -f .env.e2e synpress run --configFile synpress.config.js"`
+`"test:e2e": "start-server-and-test 'yarn start' http://localhost:8080 'yarn synpress:run'"`
 
 ---
 
