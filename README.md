@@ -126,7 +126,28 @@ IS_TESTNET=true
 `"synpress:run": "env-cmd -f .env.e2e synpress run --configFile synpress.config.js"`
 `"test:e2e": "start-server-and-test 'yarn start' http://localhost:8080 'yarn synpress:run'"`
 
+#### 6. Fix the errors
+
+> (ISSUE)[https://github.com/cypress-io/cypress/issues/26308]
+
+Cypress 12.x has an error related to bundling source code.
+
+The simple way to fix the issue is to change the "moduleResolution": "bundler" to "moduleResolution": "node" in tsconfig.json;
+
+But, in the case of the users who use nextjs, "moduleResolution": "bundler" options is applied. So, checking the **ISSUE** Cypress developers refer to add "ts-node" option to the tsconfig.json. And the issue is solved.
+
+This issue is also the same for Synpress using Cypress 12.x versions.
+
+#### 7. Fix the errors of cypress
+
+After test the synpress, I just compare synpress and cypress but it returns error "Webpack Compilation Error
+Module parse failed: 'import' and 'export' may appear only with 'sourceType: module'"
+
+Now, I dealing with this issue.
+
 ---
+
+### The Other uses (Not tested)
 
 (READ THE DOCS)[https://github.com/synpress-io/docs/blob/main/getting-starting/writing-your-first-e2e-test.md];
 
