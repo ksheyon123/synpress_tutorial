@@ -18,4 +18,4 @@ import "./commands";
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import "@synthetixio/synpress/support/index";
+// import "@synthetixio/synpress/support/index";
